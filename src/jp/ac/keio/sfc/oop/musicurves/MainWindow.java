@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame implements ActionListener {
 
+    Sketch sketchBoard;
 
     MainWindow(){
         setTitle("MusiCurves");
@@ -29,7 +30,7 @@ public class MainWindow extends JFrame implements ActionListener {
         gbc.weighty = 5;
         gbc.weightx = 1;
         JPanel leftPanel = new JPanel();
-        leftPanel.setBackground(ThemeColour.background);
+        leftPanel.setBackground(ThemeColour.purple);
         layout.setConstraints(leftPanel,gbc);
         getContentPane().add(leftPanel);
 
@@ -38,7 +39,7 @@ public class MainWindow extends JFrame implements ActionListener {
         gbc.weighty = 5;
         gbc.weightx = 1;
         JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(ThemeColour.background);
+        centerPanel.setBackground(ThemeColour.purple);
         GridBagLayout buttonLayout = new GridBagLayout();
         centerPanel.setLayout(buttonLayout);
         layout.setConstraints(centerPanel,gbc);
@@ -49,7 +50,7 @@ public class MainWindow extends JFrame implements ActionListener {
         gbc.weighty = 5;
         gbc.weightx = 1;
         JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(ThemeColour.background);
+        rightPanel.setBackground(ThemeColour.purple);
         layout.setConstraints(rightPanel,gbc);
         getContentPane().add(rightPanel);
 
@@ -58,9 +59,10 @@ public class MainWindow extends JFrame implements ActionListener {
         gbc.gridwidth = 3;
         gbc.weightx = 1;
         gbc.weighty = 95;
-        JPanel panel = new JPanel();
-        layout.setConstraints(panel,gbc);
-        getContentPane().add(panel);
+        sketchBoard = new Sketch();
+        sketchBoard.setBackground(ThemeColour.background);
+        layout.setConstraints(sketchBoard,gbc);
+        getContentPane().add(sketchBoard);
 
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.insets= new Insets(0,0,0,0);
@@ -70,27 +72,48 @@ public class MainWindow extends JFrame implements ActionListener {
 
 
         JButton button = new JButton();
-        button.setText("再生");
+        button.setText("Play");
         button.addActionListener(this);
         buttonLayout.setConstraints(button,buttonConstraints);
         centerPanel.add(button);
 
+        JButton button2 = new JButton();
+        button2.setText("Eraser");
+        button2.addActionListener(this);
+        buttonLayout.setConstraints(button2,buttonConstraints);
+        centerPanel.add(button2);
 
-
+        JButton button3 = new JButton();
+        button3.setText("Pen");
+        button3.addActionListener(this);
+        buttonLayout.setConstraints(button3,buttonConstraints);
+        centerPanel.add(button3);
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Melody melody = new Melody();
-        melody.addPitch(770,3);
-        melody.addPitch(500,3);
+        if (e.getActionCommand() == "Play" )
+        {
+            Melody melody = new Melody();
+            melody.addPitch(770,3);
+            melody.addPitch(500,3);
 
-        MelodySequence[] melodies = new MelodySequence[1];
-        melodies[0] = new MelodySequence(melody);
+            MelodySequence[] melodies = new MelodySequence[1];
+            melodies[0] = new MelodySequence(melody);
 
-        SoundPlayer sp = new SoundPlayer(melodies);
+            SoundPlayer sp = new SoundPlayer(melodies);
 
-        sp.play();
+            sp.play();
+        }
+        else if(e.getActionCommand() == "Eraser")
+        {
+            sketchBoard.mode = Sketch.MouseMode.Eraser;
+        }
+        else if(e.getActionCommand() == "Pen")
+        {
+            sketchBoard.mode = Sketch.MouseMode.Pen;
+        }
+
     }
 }
