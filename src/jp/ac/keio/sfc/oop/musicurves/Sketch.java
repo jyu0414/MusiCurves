@@ -1,13 +1,17 @@
 package jp.ac.keio.sfc.oop.musicurves;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Sketch extends JPanel implements MouseListener, MouseMotionListener {
@@ -32,6 +36,8 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
         super.paintComponent(g);
 
         Graphics2D grap = (Graphics2D) g;
+
+        drawStave(grap);
 
         lines.forEach(line -> {
 
@@ -66,6 +72,32 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
 
 
     }
+
+    void drawStave(Graphics2D grap)
+    {
+        grap.setStroke(new BasicStroke(1));
+        int verticalMargin = (int) (grap.getClipBounds().height * 0.8 / 10);
+        for(int i = 0; i < 11; i++)
+        {
+            if(i == 5) continue;
+            int y = (int) (grap.getClipBounds().height * 0.1 + i * verticalMargin);
+            grap.drawLine(0,y,grap.getClipBounds().width,y);
+        }
+
+        try {
+            Image img = ImageIO.read(new File("resources/bassclef.png"));
+            float aspectRatio = (float)(((BufferedImage) img).getWidth()) / (float)(((BufferedImage) img).getHeight());
+            grap.drawImage(img,30 ,(int)(grap.getClipBounds().height * 0.1 + verticalMargin * 6)+5,(int) (180 * aspectRatio),180,null);
+
+            Image img2 = ImageIO.read(new File("resources/trebleclef.png"));
+            float aspectRatio2 =  (float)(((BufferedImage) img2).getWidth())/ (float)(((BufferedImage) img2).getHeight());
+            grap.drawImage(img2,20 ,(int)(grap.getClipBounds().height * 0.1) - 25,(int) (300 * aspectRatio2),300,null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     void drawPen(Graphics2D grap)
     {
