@@ -112,16 +112,13 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
 
     ArrayList<double[][]> getFrequencyLines()
     {
+        ToneScaleManager tsm = new ToneScaleManager(referenceTonePosition,octaveDistance);
         ArrayList<double[][]> freqLines = new ArrayList<>();
         for(int j = 0; j < lines.size(); j++)
         {
             if(lines.get(j).size() == 0) continue;
-            double[][] freqLine = new double[lines.get(j).size()][2];
-            for(int i = 0; i < lines.get(j).size(); i++) {
-                freqLine[i][0] = getFrequency((int)lines.get(j).get(i).getY());
-                freqLine[i][1] = lines.get(j).get(i).getX();
-            }
-            freqLines.add(freqLine);
+
+            freqLines.add(tsm.getfrequencyFromLine(lines.get(j)));
         }
         return freqLines;
     }
@@ -154,58 +151,6 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
         grap.setColor(ThemeColour.purple);
         grap.drawOval((int)mousePoint.getX() - 6,(int)mousePoint.getY() - 6,12,12);
 
-    }
-
-    synchronized double getFrequency(int position){
-
-        int graphicDistance = referenceTonePosition - position; //画面上の距離
-        int toneDistance = graphicDistance / (octaveDistance / 7); //音階上の距離
-        float toneDistancePlus = graphicDistance % (octaveDistance / 7); //音階上の距離のあまり
-
-        double cent = 0; //何音分か
-        for(int i = 1; i <= Math.abs(toneDistance); i++)
-        {
-            if(toneDistance < 0)
-            {
-                cent -= getScale(toneDistance - 1);
-            }
-            else {
-                cent += getScale(toneDistance - 1);
-            }
-
-        }
-        cent += getScale(toneDistance) * (toneDistancePlus / (octaveDistance / 7.0));
-
-        if(cent == 0)
-        {
-            return 440;
-        }
-        else if(cent > 0)
-        {
-            double result = 440 * Math.pow(2,(int)(cent / 7));
-            double remain = ((cent - (int)(cent / 7)) / 7);
-            result *= Math.pow(2.0, remain);
-
-            return result;
-
-        }
-        else {
-            cent = Math.abs(cent);
-            double result = 440 / Math.pow(2,(int)(cent / 7));
-            double remain = ((cent - (int)(cent / 7)) / 7);
-            result /= Math.pow(2.0, remain);
-            return result;
-        }
-
-
-    }
-
-
-
-    double getScale(int n){
-        int number = n % SCALE.length;
-        if(number < 0) number += 7;
-        return SCALE[number];
     }
 
 
