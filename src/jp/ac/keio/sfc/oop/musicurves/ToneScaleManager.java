@@ -9,37 +9,20 @@ public class ToneScaleManager {
 
     private static final double[] SCALE = {1,0.5,1,1,0.5,1,1};
 
-    ToneScaleManager(int _referenceTonePosition, int _octaveDistance){
+    public ToneScaleManager(int _referenceTonePosition, int _octaveDistance){
         referenceTonePosition = _referenceTonePosition;
         octaveDistance = _octaveDistance;
     }
 
-    double getFrequency(int position){
+    public double getFrequency(int position){
 
-        int graphicDistance = referenceTonePosition - position; //画面上の距離
-        int toneDistance = graphicDistance / (octaveDistance / 7); //音階上の距離
-        float toneDistancePlus = graphicDistance % (octaveDistance / 7); //音階上の距離のあまり
+        int graphicDistance = position - referenceTonePosition; //positionが下にある、つまり全体がプラスの時低くなる
 
-        double cent = 0; //何音分か
-        for(int i = 1; i <= Math.abs(toneDistance); i++)
+        double cent = getInterval(graphicDistance); //プラスが高い
+
+        if(cent >= 0)
         {
-            if(toneDistance < 0)
-            {
-                cent -= getScale(toneDistance - 1);
-            }
-            else {
-                cent += getScale(toneDistance - 1);
-            }
 
-        }
-        cent += getScale(toneDistance) * (toneDistancePlus / (octaveDistance / 7.0));
-
-        if(cent == 0)
-        {
-            return 440;
-        }
-        else if(cent > 0)
-        {
             double result = 440 * Math.pow(2,(int)(cent / 7));
             double remain = ((cent - (int)(cent / 7)) / 7);
             result *= Math.pow(2.0, remain);
@@ -60,13 +43,16 @@ public class ToneScaleManager {
 
 
 
-    double getScale(int n){
+    public double getScale(int n){
+        if(n == 0) return 0;
         int number = n % SCALE.length;
         if(number < 0) number += 7;
+        else if (number > 0) number -= 1;
+        else number = 6;
         return SCALE[number];
     }
 
-    public double[][] getfrequencyFromLine(ArrayList<Point2D> line)
+    public double[][] getFrequencyFromLine(ArrayList<Point2D> line)
     {
 
         double[][] freqLine = new double[line.size()][2];
@@ -77,6 +63,40 @@ public class ToneScaleManager {
         }
 
         return freqLine;
+    }
+
+    public double getInterval(int _graphicDistance){
+        int graphicDistance = -1 * _graphicDistance;
+        int naturalNoteDistance = octaveDistance / 7; //幹音の表示上の距離
+        Boolean isUpper = graphicDistance >= 0;
+
+        int i = 0;
+        double interval = 0;
+
+        while (naturalNoteDistance * i <= Math.abs(graphicDistance))
+        {
+            if(isUpper)
+            {
+                interval += getScale(i);
+            }
+            else {
+                interval -= getScale(-i);
+            }
+
+            i++;
+        }
+
+        if(isUpper)
+        {
+            interval +=  getScale(i) * (graphicDistance - naturalNoteDistance * (i - 1)) / naturalNoteDistance;
+        }
+        else
+        {
+            interval += getScale(i) * (graphicDistance + naturalNoteDistance * (i - 1)) / naturalNoteDistance ;
+        }
+
+        return interval;
+
     }
 
 }

@@ -34,7 +34,7 @@ public class Melody {
 
         for(int i = 0; i < harmonics.size(); i++) {
             double angularVelocity = 2 * Math.PI / SAMPLE_RATE * frequency * harmonics.get(i).multiple; //角速度
-            result += (127 * VOLUME * harmonics.get(i).amplitude * Math.sin(data.size() * angularVelocity));
+            result += (65536 * VOLUME * harmonics.get(i).amplitude * Math.sin(data.size() * angularVelocity));
         }
 
 
@@ -42,7 +42,7 @@ public class Melody {
     }
 
     AudioFormat getFormat(){
-        return new AudioFormat(SAMPLE_RATE, 8, 2, true, false);
+        return new AudioFormat(SAMPLE_RATE, 16, 1, true, false);
     }
 
     byte[] getData()

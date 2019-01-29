@@ -118,7 +118,7 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
         {
             if(lines.get(j).size() == 0) continue;
 
-            freqLines.add(tsm.getfrequencyFromLine(lines.get(j)));
+            freqLines.add(tsm.getFrequencyFromLine(lines.get(j)));
         }
         return freqLines;
     }
