@@ -17,13 +17,15 @@ public class Melody {
 
     Melody(){
         harmonics.add(new Harmonic(1,1));
-        //harmonics.add(new Harmonic(2,1.0/3.0));
-        //harmonics.add(new Harmonic(3,1.0/5.0));
-        //harmonics.add(new Harmonic(4,1.0/7.0));
-        //harmonics.add(new Harmonic(5,1.0/9.0));
+        harmonics.add(new Harmonic(2,1.0/3.0));
+        harmonics.add(new Harmonic(3,1.0/5.0));
+        harmonics.add(new Harmonic(5,1.0/9.0));
     }
 
     void addPitch(double frequency, int repeat) {
+
+
+
         for(int i = 0; i < repeat; i ++)
         {
             data.add(additiveSynthesis(frequency));

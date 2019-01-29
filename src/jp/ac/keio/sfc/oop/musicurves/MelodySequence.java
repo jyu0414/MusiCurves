@@ -6,23 +6,23 @@ import java.util.Arrays;
 
 public class MelodySequence {
     Melody melody;
-    float startPosition; //offset
+    double startOffsetTime; //offsetsec
 
-    MelodySequence(Melody _melody, float _startPosition)
+    MelodySequence(Melody _melody, double _startPosition)
     {
         melody = _melody;
-        startPosition = _startPosition;
+        startOffsetTime = _startPosition;
     }
 
     MelodySequence(Melody _melody)
     {
         melody = _melody;
-        startPosition = 0;
+        startOffsetTime = 0;
     }
 
     int getLength()
     {
-        return (int)(startPosition * melody.SAMPLE_RATE) + melody.getSize();
+        return (int)(startOffsetTime * melody.SAMPLE_RATE) + melody.getSize();
     }
 
 
@@ -37,7 +37,7 @@ public class MelodySequence {
             {
                 length = len;
             }
-            byte[] space = new byte[(int)(sequence.startPosition * sequence.melody.SAMPLE_RATE)];
+            byte[] space = new byte[(int)(sequence.startOffsetTime * sequence.melody.SAMPLE_RATE)];
             Arrays.fill(space, (byte) 0);
             byte[] melodyData = sequence.melody.getData();
             ByteBuffer bb = ByteBuffer.allocate(space.length+melodyData.length);
@@ -58,6 +58,12 @@ public class MelodySequence {
                     result[i] += d[i];
                 }
 
+            }
+            result[i] /= data.size();
+
+            if(result[i] > 120)
+            {
+                result[i] = 120;
             }
         }
 

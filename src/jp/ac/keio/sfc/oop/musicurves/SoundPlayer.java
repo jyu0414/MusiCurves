@@ -16,34 +16,34 @@ public class SoundPlayer {
 
     void play() {
 
-        if(sequences == null || sequences.size() == 0)
-        {
-            return;
-        }
+        sequences.forEach(sequence -> {
+            //formatは同じで無ければならない
+            ArrayList<MelodySequence> ms = new ArrayList<>();
+            ms.add(sequence);
+            byte[] data = MelodySequence.mix(ms);
+            //byte[] data = sequences.get(0).melody.getData();
 
-        //formatは同じで無ければならない
-        //byte[] data = MelodySequence.mix(sequences);
-        byte[] data = sequences.get(0).melody.getData();
+            try {
+                DataLine.Info info = new DataLine.Info(Clip.class, sequence.melody.getFormat());
+                Clip clip = (Clip) AudioSystem.getLine(info);
 
-        try {
-            DataLine.Info info = new DataLine.Info(Clip.class, sequences.get(0).melody.getFormat());
-            Clip clip = (Clip) AudioSystem.getLine(info);
+                if(data.length % 2 != 0)
+                {
+                    data = Arrays.copyOfRange(data,0,data.length - 1);
+                }
 
-            if(data.length % 2 != 0)
-            {
-                data = Arrays.copyOfRange(data,0,data.length - 1);
+                clip.open(sequence.melody.getFormat(), data , 0, data.length);
+                clip.start();
+                while (clip.isRunning()) {
+                    Thread.sleep(100);
+                }
+
+
+            } catch (Exception er) {
+                System.out.println("error:" + er);
             }
+        });
 
-            clip.open(sequences.get(0).melody.getFormat(), data , 0, data.length);
-            clip.start();
-            while (clip.isRunning()) {
-                Thread.sleep(100);
-            }
-
-
-        } catch (Exception er) {
-            System.out.println("error:" + er);
-        }
     }
 
 }

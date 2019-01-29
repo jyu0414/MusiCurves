@@ -1,9 +1,6 @@
 package jp.ac.keio.sfc.oop.musicurves;
 
 import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ToneScaleManager {
@@ -46,8 +43,6 @@ public class ToneScaleManager {
 
     }
 
-
-
     public double getScale(int n){
         if(n == 0) return 0;
         int number = n % SCALE.length;
@@ -57,39 +52,31 @@ public class ToneScaleManager {
         return SCALE[number];
     }
 
-    public MelodySequence getFrequencyFromLine(ArrayList<Point2D> line)
+    public MelodySequence getFrequencyFromLine(ArrayList<Point2D> line,double offset)
     {
 
         Melody mel = new Melody();
-        try {
-            FileWriter fw = new FileWriter("test.csv");
-            for(int i = 0; i <line.size(); i++) {
+        for(int i = 0; i <line.size(); i++) {
+
+            int repeat = (int) Math.round(totalTime * mel.SAMPLE_RATE / (line.get(line.size() - 1).getX() - line.get(0).getX()));
+
+            double val = getFrequency((int) line.get(i).getY());
+            mel.addPitch(val,repeat);
 
 
+            if(i + 1 >= line.size()) continue;
 
-                int repeat = (int) Math.round(totalTime * mel.SAMPLE_RATE / (line.get(line.size() - 1).getX() - line.get(0).getX()));
-                mel.addPitch(getFrequency((int) line.get(i).getY()),repeat);
-
-
-                fw.write(line.get(i).getY() + ",1\n");
-
-                if(i + 1 >= line.size()) continue;
-
-                for(int j = 1; line.get(i).getX() + j < line.get(i+1).getX(); j++)
-                {
-                    double value = getPointOnLine(line.get(i).getX(),line.get(i).getY(),line.get(i+1).getX(),line.get(i+1).getY(),line.get(i).getX() + j);
-                    mel.addPitch(getFrequency((int)Math.round(value)),repeat);
-                    fw.write((int)Math.round(value) + "\n");
-                }
-
-
+            for(int j = 1; line.get(i).getX() + j < line.get(i+1).getX(); j++)
+            {
+                double value = getPointOnLine(line.get(i).getX(),line.get(i).getY(),line.get(i+1).getX(),line.get(i+1).getY(),line.get(i).getX() + j);
+                val = getFrequency((int)Math.round(value));
+                mel.addPitch(val,repeat);
             }
-            fw.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+
         }
 
-        return new MelodySequence(mel, (float) line.get(0).getX());
+        return new MelodySequence(mel, offset);
     }
 
     double getPointOnLine(double x1,double y1,double x2,double y2,double x){
