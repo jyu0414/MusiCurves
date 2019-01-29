@@ -1,11 +1,16 @@
 package jp.ac.keio.sfc.oop.musicurves;
 
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ToneScaleManager {
-    public int referenceTonePosition;
-    public int octaveDistance;
+    public double referenceTonePosition;
+    public double octaveDistance;
+
+    double totalTime = 5;
 
     private static final double[] SCALE = {1,0.5,1,1,0.5,1,1};
 
@@ -14,9 +19,9 @@ public class ToneScaleManager {
         octaveDistance = _octaveDistance;
     }
 
-    public double getFrequency(int position){
+    public double getFrequency(double position){
 
-        int graphicDistance = position - referenceTonePosition; //positionが下にある、つまり全体がプラスの時低くなる
+        double graphicDistance = position - referenceTonePosition; //positionが下にある、つまり全体がプラスの時低くなる
 
         double cent = getInterval(graphicDistance); //プラスが高い
 
@@ -52,22 +57,50 @@ public class ToneScaleManager {
         return SCALE[number];
     }
 
-    public double[][] getFrequencyFromLine(ArrayList<Point2D> line)
+    public MelodySequence getFrequencyFromLine(ArrayList<Point2D> line)
     {
 
-        double[][] freqLine = new double[line.size()][2];
+        Melody mel = new Melody();
+        try {
+            FileWriter fw = new FileWriter("test.csv");
+            for(int i = 0; i <line.size(); i++) {
 
-        for(int i = 0; i <line.size(); i++) {
-            freqLine[i][0] = getFrequency((int)line.get(i).getY());
-            freqLine[i][1] = line.get(i).getX();
+
+
+                int repeat = (int) Math.round(totalTime * mel.SAMPLE_RATE / (line.get(line.size() - 1).getX() - line.get(0).getX()));
+                mel.addPitch(getFrequency((int) line.get(i).getY()),repeat);
+
+
+                fw.write(line.get(i).getY() + ",1\n");
+
+                if(i + 1 >= line.size()) continue;
+
+                for(int j = 1; line.get(i).getX() + j < line.get(i+1).getX(); j++)
+                {
+                    double value = getPointOnLine(line.get(i).getX(),line.get(i).getY(),line.get(i+1).getX(),line.get(i+1).getY(),line.get(i).getX() + j);
+                    mel.addPitch(getFrequency((int)Math.round(value)),repeat);
+                    fw.write((int)Math.round(value) + "\n");
+                }
+
+
+            }
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
-        return freqLine;
+        return new MelodySequence(mel, (float) line.get(0).getX());
     }
 
-    public double getInterval(int _graphicDistance){
-        int graphicDistance = -1 * _graphicDistance;
-        int naturalNoteDistance = octaveDistance / 7; //幹音の表示上の距離
+    double getPointOnLine(double x1,double y1,double x2,double y2,double x){
+        double a = (y1 - y2) / (x1 - x2);
+        double b = y1 - a * x1;
+        return (a * x + b);
+    }
+
+    public double getInterval(double _graphicDistance){
+        double graphicDistance = -1 * _graphicDistance;
+        double naturalNoteDistance = octaveDistance / 7; //幹音の表示上の距離
         Boolean isUpper = graphicDistance >= 0;
 
         int i = 0;

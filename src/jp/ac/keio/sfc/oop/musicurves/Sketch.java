@@ -110,10 +110,10 @@ public class Sketch extends JPanel implements MouseListener, MouseMotionListener
 
     }
 
-    ArrayList<double[][]> getFrequencyLines()
+    ArrayList<MelodySequence> getFrequencyLines()
     {
         ToneScaleManager tsm = new ToneScaleManager(referenceTonePosition,octaveDistance);
-        ArrayList<double[][]> freqLines = new ArrayList<>();
+        ArrayList<MelodySequence> freqLines = new ArrayList<>();
         for(int j = 0; j < lines.size(); j++)
         {
             if(lines.get(j).size() == 0) continue;

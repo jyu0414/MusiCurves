@@ -98,27 +98,8 @@ public class MainWindow extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() == "Play" )
         {
-            Lock lock = new ReentrantLock();
-            ArrayList<double[][]> lines = sketchBoard.getFrequencyLines();
-            MelodySequence[] melodies = new MelodySequence[lines.size()];
-
-            double secMultiple = 10.0 / (double)(sketchBoard.getWidth());
-
-            for (int i = 0; i < lines.size(); i++) {
-                Melody melody = new Melody();
-                for (int j = 0; j < lines.get(i).length; j++) {
-                    double prev = 0;
-                    if (j > 0) prev = lines.get(i)[j - 1][1];
-                    melody.addPitch(lines.get(i)[j][0], (lines.get(i)[j][1] - prev) * secMultiple);
-                }
-                melodies[i] = new MelodySequence(melody, (float) (lines.get(i)[0][1] * secMultiple));
-            }
-
-            if(melodies.length > 0)
-            {
-                SoundPlayer sp = new SoundPlayer(melodies);
-                sp.play();
-            }
+            SoundPlayer sp = new SoundPlayer(sketchBoard.getFrequencyLines());
+            sp.play();
 
         }
         else if(e.getActionCommand() == "Eraser")

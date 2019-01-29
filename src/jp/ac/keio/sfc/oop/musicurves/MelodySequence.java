@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class MelodySequence {
     Melody melody;
-    float startPosition; //sec
+    float startPosition; //offset
 
     MelodySequence(Melody _melody, float _startPosition)
     {
@@ -26,7 +26,7 @@ public class MelodySequence {
     }
 
 
-    static byte[] mix(MelodySequence[] sequences)
+    static byte[] mix(ArrayList<MelodySequence> sequences)
     {
         int length = 0;
         ArrayList<byte[]> data = new ArrayList<>();
