@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Melody {
 
-    private static final float SAMPLE_RATE = 44100;
-    private static final double VOLUME = 0.9;
+    static final float SAMPLE_RATE = 44100;
+    static final double VOLUME = 0.9;
     private ArrayList<Byte> data = new ArrayList<>();
     private ArrayList<Harmonic> harmonics = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class Melody {
 
         for(int i = 0; i < harmonics.size(); i++) {
             double angularVelocity = 2 * Math.PI / SAMPLE_RATE * frequency * harmonics.get(i).multiple; //角速度
-            result += (128 * VOLUME * harmonics.get(i).amplitude * Math.sin(data.size() * angularVelocity));
+            result += (127 * VOLUME * harmonics.get(i).amplitude * Math.sin(data.size() * angularVelocity));
         }
 
 
@@ -56,12 +56,10 @@ public class Melody {
         return result;
     }
 
-    int size()
+    int getSize()
     {
         return data.size();
     }
 
-
-    //ref https://jprogramer.com/java/2272
 
 }
