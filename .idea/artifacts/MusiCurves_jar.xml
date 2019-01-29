@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MusiCurves:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MusiCurves_jar</output-path>
+    <root id="archive" name="MusiCurves.jar">
+      <element id="module-output" name="MusiCurves" />
+    </root>
+  </artifact>
+</component>

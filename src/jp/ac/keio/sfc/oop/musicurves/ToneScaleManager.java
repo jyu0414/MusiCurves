@@ -58,7 +58,7 @@ public class ToneScaleManager {
         Melody mel = new Melody();
         for(int i = 0; i <line.size(); i++) {
 
-            int repeat = (int) Math.round(totalTime * mel.SAMPLE_RATE / (line.get(line.size() - 1).getX() - line.get(0).getX()));
+            int repeat = (int) Math.round(totalTime * Melody.SAMPLE_RATE / (line.get(line.size() - 1).getX() - line.get(0).getX()));
 
             double val = getFrequency((int) line.get(i).getY());
             mel.addPitch(val,repeat);

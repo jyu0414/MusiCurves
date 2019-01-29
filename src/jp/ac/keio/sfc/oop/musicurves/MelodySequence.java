@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MelodySequence {
+class MelodySequence {
     Melody melody;
-    double startOffsetTime; //offsetsec
+    double startOffsetTime;
 
     MelodySequence(Melody _melody, double _startPosition)
     {
@@ -14,15 +14,9 @@ public class MelodySequence {
         startOffsetTime = _startPosition;
     }
 
-    MelodySequence(Melody _melody)
-    {
-        melody = _melody;
-        startOffsetTime = 0;
-    }
-
     int getLength()
     {
-        return (int)(startOffsetTime * melody.SAMPLE_RATE) + melody.getSize();
+        return (int)(startOffsetTime * Melody.SAMPLE_RATE) + melody.getSize();
     }
 
 
@@ -37,7 +31,7 @@ public class MelodySequence {
             {
                 length = len;
             }
-            byte[] space = new byte[(int)(sequence.startOffsetTime * sequence.melody.SAMPLE_RATE)];
+            byte[] space = new byte[(int)(sequence.startOffsetTime * Melody.SAMPLE_RATE)];
             Arrays.fill(space, (byte) 0);
             byte[] melodyData = sequence.melody.getData();
             ByteBuffer bb = ByteBuffer.allocate(space.length+melodyData.length);
@@ -60,11 +54,6 @@ public class MelodySequence {
 
             }
             result[i] /= data.size();
-
-            if(result[i] > 120)
-            {
-                result[i] = 120;
-            }
         }
 
         return result;

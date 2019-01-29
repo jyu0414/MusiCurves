@@ -6,7 +6,7 @@ import java.util.*;
 public class Melody {
 
     static final float SAMPLE_RATE = 44100;
-    static final double VOLUME = 0.9;
+    static final double VOLUME = 0.3;
     private ArrayList<Byte> data = new ArrayList<>();
     private ArrayList<Harmonic> harmonics = new ArrayList<>();
 
@@ -20,6 +20,8 @@ public class Melody {
         harmonics.add(new Harmonic(2,1.0/3.0));
         harmonics.add(new Harmonic(3,1.0/5.0));
         harmonics.add(new Harmonic(5,1.0/9.0));
+        harmonics.add(new Harmonic(0.4,0.3));
+        harmonics.add(new Harmonic(10,0.1));
     }
 
     void addPitch(double frequency, int repeat) {
@@ -41,7 +43,10 @@ public class Melody {
             double angularVelocity = 2 * Math.PI / SAMPLE_RATE * frequency * harmonics.get(i).multiple; //角速度
             result += (256 * VOLUME * harmonics.get(i).amplitude * Math.sin(data.size() * angularVelocity));
         }
-
+        if(result > 250)
+        {
+            result = 250;
+        }
 
         return (byte)result;
     }
